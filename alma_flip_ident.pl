@@ -29,9 +29,9 @@ use XML::Twig;
 #----------------------------------------------------------------------------------------#
 
 # Alma API login/url:
-my $API_USER 		= 'AlmaSDK-alma_api-institutionCode-01ALLIANCE_OHSU';
-my $API_PASS 		= '3u63p,nctJX58}V';
-my $API_BURL 		= 'https://na01.alma.exlibrisgroup.com:443/almaws/v1/users';
+my $API_USER 		= 'APIUSER';
+my $API_PASS 		= 'APIPASS';
+my $API_BURL 		= 'APIURL';
 
 #----------------------------------------------------------------------------------------#
 # 											MAIN
