@@ -115,13 +115,16 @@ foreach my $line (@lines){
 		$twig_pre->parse( $response->content );
 		$twig_pre->flush( $fh_pre );
 	
-		# create post modified XML parser:	
+		# create post modified XML parser w/2 handlers:
+		#  1. - Set UIs with id_type BARCODE to an 'Internal' segment_type
+		#  2. - 'NULL' out any blank phone number fields that may have been loaded via the initial EXL loads
 		my $twig_post = XML::Twig->new(
         	pretty_print => 'indented_a',
         	keep_atts_order => 1,
 			no_prolog => 1,  
         	twig_handlers => { 
-           		q(user/user_identifiers/user_identifier[string(id_type)="BARCODE"]) => \&set_att,
+           		q(user/user_identifiers/user_identifier[string(id_type)="BARCODE"]) => sub { $_->set_att(segment_type => 'Internal') },
+           		q(user/contact_info/phones/phone/phone_number[string()=""]) => sub { $_->set_text('NULL') },
         	}   
 		);
 		$twig_post->parse( $response->content );
@@ -166,15 +169,3 @@ close $fh_pre or warn "$0: close $fh_pre: $!";
 close $fh_post or warn "$0: close $fh_post: $!";
 
 print "Finished!\n";
-
-#----------------------------------------------------------------------------------------#
-# 											SUBS
-#----------------------------------------------------------------------------------------#
-
-# set_att() - set attribute segment_type to "Internal"
-sub set_att {
-    my ($t, $e) = @_;
-    
-    # set attribute:
-    $e->set_att(segment_type => 'Internal');
-}
